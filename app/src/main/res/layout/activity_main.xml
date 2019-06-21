@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="biz.ostw.android.gallery.GridViewFragment"
+        android:name="biz.ostw.android.gallery.imageview.ImageCollectionViewFragment"
         android:layout_width="395dp"
         android:layout_height="668dp"
         android:layout_marginTop="8dp"

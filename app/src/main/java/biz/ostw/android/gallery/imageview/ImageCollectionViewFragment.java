@@ -1,54 +1,53 @@
-package biz.ostw.android.gallery;
+package biz.ostw.android.gallery.imageview;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.net.URL;
+
+import biz.ostw.android.gallery.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GridViewFragment.OnFragmentInteractionListener} interface
+ * {@link ImageCollectionViewFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GridViewFragment#newInstance} factory method to
+ * Use the {@link ImageCollectionViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GridViewFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ImageCollectionViewFragment extends Fragment {
+    private static final String ARG_PARAM_URL = "param_url";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String urlParam;
+
+    private RecyclerView collectionView;
 
     private OnFragmentInteractionListener mListener;
 
-    public GridViewFragment() {
-        // Required empty public constructor
+    public ImageCollectionViewFragment() {
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GridViewFragment.
+     * @param url URL of the image source.
+     * @return A new instance of fragment ImageCollectionViewFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static GridViewFragment newInstance(String param1, String param2) {
-        GridViewFragment fragment = new GridViewFragment();
+    public static ImageCollectionViewFragment newInstance(URL url) {
+        ImageCollectionViewFragment fragment = new ImageCollectionViewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM_URL, url);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,19 +56,24 @@ public class GridViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            urlParam = getArguments().getString(ARG_PARAM_URL);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_grid_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_image_collection_view, container, false);
+        RecyclerView.LayoutManager lLayout = new GridLayoutManager(this.getContext(), 2);
+        this.collectionView = view.findViewById(R.id.fragment_image_collection_view_collectionView);
+        this.collectionView.setLayoutManager(lLayout);
+
+        this.collectionView.setHasFixedSize(true);
+        this.collectionView.setAdapter(new TestRecyclerViewAdapter());
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

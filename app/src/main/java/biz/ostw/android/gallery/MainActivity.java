@@ -1,11 +1,14 @@
 package biz.ostw.android.gallery;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements GridViewFragment.OnFragmentInteractionListener {
+import biz.ostw.android.gallery.imageview.ImageCollectionViewFragment;
+
+public class MainActivity extends FragmentActivity implements ImageCollectionViewFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
