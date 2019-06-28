@@ -1,6 +1,7 @@
 package biz.ostw.android.gallery;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -16,12 +17,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import biz.ostw.android.gallery.imageview.ImageCollectionViewFragment;
+import biz.ostw.android.gallery.media.FileServiceImpl;
 import biz.ostw.android.gallery.media.MediaDatabase;
-import biz.ostw.android.gallery.media.ScanService;
+import biz.ostw.android.gallery.media.FileService;
 
 public class MainActivity extends FragmentActivity implements ImageCollectionViewFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 100;
+
+    private ServiceConnection<FileService> fileServiceServiceConnection = new ServiceConnection<>();
 
     private ImageView imageView;
 
@@ -36,13 +40,13 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
         this.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaDatabase mdb = MediaDatabase.getInstance(MainActivity.this);
-                mdb.get(Uri.parse("media:/"));
+                MainActivity.this.fileServiceServiceConnection.service().update();
+//                MediaDatabase mdb = MediaDatabase.getInstance(MainActivity.this);
+//                mdb.get(Uri.parse("media:/"));
             }
         });
-        MediaDatabase.deleteDatabase(this);
 
-        this.checkPermissionAndStartScanService();
+        MediaDatabase.deleteDatabase(this);
     }
 
     private void checkPermissionAndStartScanService() {
@@ -59,10 +63,24 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.checkPermissionAndStartScanService();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.unbindService(this.fileServiceServiceConnection);
+    }
+
     private void startScanService() {
-        Intent intent = new Intent(this, ScanService.class);
-        intent.setAction(ScanService.ACTION_UPDATE);
-        this.startService(intent);
+        this.bindService(
+                new Intent(this, FileServiceImpl.class),
+                this.fileServiceServiceConnection,
+                Context.BIND_AUTO_CREATE
+        );
     }
 
     @Override
@@ -78,10 +96,6 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    public static class MyLiveData extends LiveData<String> {
 
     }
 

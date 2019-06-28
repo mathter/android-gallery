@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".media.ScanService"
+            android:name=".media.FileServiceImpl"
             android:enabled="true"
             android:exported="false"></service>
 
