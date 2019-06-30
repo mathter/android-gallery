@@ -1,4 +1,4 @@
-package biz.ostw.android.gallery.media;
+package biz.ostw.android.gallery.media.db;
 
 import android.net.Uri;
 
@@ -22,10 +22,10 @@ public interface MediaDao {
     public void delete(Collection<MediaRecord> records);
 
     @Query("select * from media_record order by weighting")
-    public List<MediaRecord> get();
+    public List<MediaRecord> getChild();
 
     @Query("select * from media_record where media_root_uri = :mediaRootUri order by weighting")
-    public List<MediaRecord> get(Uri mediaRootUri);
+    public List<MediaRecord> getChild(Uri mediaRootUri);
 
     @Query("select * from media_record where id = :id")
     public MediaRecord get(long id);
@@ -35,4 +35,7 @@ public interface MediaDao {
 
     @Delete
     public void delete(MediaRecord record);
+
+    @Query("delete from media_record where id = :id")
+    public void delete(long id);
 }

@@ -8,11 +8,12 @@ import android.os.IBinder;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import biz.ostw.android.gallery.ServiceConnection;
+import biz.ostw.android.gallery.media.db.MediaDatabase;
 import biz.ostw.android.gallery.media.local.LocalFileScanner;
 
 public class FileServiceImpl extends Service implements FileService {
@@ -66,6 +67,13 @@ public class FileServiceImpl extends Service implements FileService {
                 }
             }
         });
+    }
+
+    @Override
+    public List<Media> list(Uri rootMediaUri, int start, int count) {
+        final MediaDatabase mdb = MediaDatabase.getInstance(this);
+        mdb.getChild(rootMediaUri);
+        return null;
     }
 
     public class LocalBinder extends Binder implements ServiceConnection.Binder<FileService> {

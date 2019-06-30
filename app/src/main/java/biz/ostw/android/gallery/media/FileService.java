@@ -1,6 +1,12 @@
 package biz.ostw.android.gallery.media;
 
+import android.net.Uri;
+
+import java.util.List;
+
 public interface FileService {
 
-    void update();
+    public void update();
+
+    public List<Media> list(Uri rootMediaUri, int start, int count);
 }

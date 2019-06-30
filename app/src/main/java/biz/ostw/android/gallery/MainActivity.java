@@ -13,12 +13,11 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import biz.ostw.android.gallery.imageview.ImageCollectionViewFragment;
 import biz.ostw.android.gallery.media.FileServiceImpl;
-import biz.ostw.android.gallery.media.MediaDatabase;
+import biz.ostw.android.gallery.media.db.MediaDatabase;
 import biz.ostw.android.gallery.media.FileService;
 
 public class MainActivity extends FragmentActivity implements ImageCollectionViewFragment.OnFragmentInteractionListener {
@@ -42,7 +41,7 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
             public void onClick(View v) {
                 MainActivity.this.fileServiceServiceConnection.service().update();
 //                MediaDatabase mdb = MediaDatabase.getInstance(MainActivity.this);
-//                mdb.get(Uri.parse("media:/"));
+//                mdb.getChild(Uri.parse("media:/"));
             }
         });
 

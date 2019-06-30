@@ -1,4 +1,4 @@
-package biz.ostw.android.gallery.media;
+package biz.ostw.android.gallery.media.db;
 
 import android.net.Uri;
 
@@ -9,12 +9,14 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
+import biz.ostw.android.gallery.media.Media;
+
 @Entity(
         tableName = "media_record",
         indices = {
                 @Index(name = "idx_media_uri", value = "media_root_uri", unique = false)
         })
-public class MediaRecord {
+public class MediaRecord implements Media {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -35,8 +37,9 @@ public class MediaRecord {
     @ColumnInfo(name = "weighting")
     private long weighting;
 
+    @Override
     public Uri getMediaUri() {
-        return Uri.withAppendedPath(this.rootUri, this.id + this.name);
+        return Uri.withAppendedPath(Uri.withAppendedPath(this.rootUri, String.valueOf(this.id)), this.name);
     }
 
     public long getId() {
@@ -47,18 +50,22 @@ public class MediaRecord {
         this.id = id;
     }
 
+    @Override
     public Uri getRootUri() {
         return rootUri;
     }
 
+    @Override
     public void setRootUri(Uri rootUri) {
         this.rootUri = rootUri;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -79,10 +86,12 @@ public class MediaRecord {
         this.lastScannedTime = lastScannedTime;
     }
 
+    @Override
     public long getWeighting() {
         return weighting;
     }
 
+    @Override
     public void setWeighting(long weighting) {
         this.weighting = weighting;
     }

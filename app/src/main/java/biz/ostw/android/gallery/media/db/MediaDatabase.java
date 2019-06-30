@@ -1,4 +1,4 @@
-package biz.ostw.android.gallery.media;
+package biz.ostw.android.gallery.media.db;
 
 import android.content.Context;
 import android.net.Uri;
@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import biz.ostw.android.gallery.media.Media;
+import biz.ostw.android.gallery.media.TypeConverter;
 
 @Database(entities = {MediaRecord.class}, version = 1, exportSchema = true)
 @TypeConverters({TypeConverter.class})
@@ -72,7 +75,7 @@ public abstract class MediaDatabase extends RoomDatabase {
 
     }
 
-    public MediaRecord insert(Uri mediaRootUri, String name, Uri fileUri) {
+    public Media insert(Uri mediaRootUri, String name, Uri fileUri) {
         final long id;
         final MediaRecord r = new MediaRecord();
 
@@ -91,35 +94,53 @@ public abstract class MediaDatabase extends RoomDatabase {
         }
     }
 
-    public void update(MediaRecord record) {
-        this.dao().update(record);
+    public void update(Media record) {
+        if (record instanceof MediaRecord) {
+            this.dao().update((MediaRecord) record);
+        } else {
+            throw new IllegalArgumentException(record.getClass() + " is not instance of " + MediaRecord.class);
+        }
     }
 
-    public MediaRecord get(long id) {
-        return this.dao().get(id);
+    public List<? extends Media> getChild(Uri mediaRootUri) {
+        return this.dao().getChild(mediaRootUri);
     }
 
-    public List<MediaRecord> get(Uri mediaRootUri) {
-        return this.dao().get(mediaRootUri);
+    public Media get(Uri mediaUri) {
+        return this.dao().get(this.parseId(mediaUri));
     }
 
-    public void delete(MediaRecord record) {
-        this.dao().delete(record);
+    public void delete(Media media) {
+        if (media instanceof MediaRecord) {
+            this.dao().delete((MediaRecord) media);
+        } else {
+            throw new IllegalArgumentException(media.getClass() + " is not instance of " + MediaRecord.class);
+        }
     }
 
-    public MediaRecord delete(final long id) {
-        return this.runInTransaction(new Callable<MediaRecord>() {
-            @Override
-            public MediaRecord call() throws Exception {
-                final MediaRecord record = MediaDatabase.this.dao().get(id);
+    public void delete(Uri mediaUri) {
+        this.dao().delete(this.parseId(mediaUri));
+    }
 
-                if (record != null) {
-                    MediaDatabase.this.delete(record);
-                }
+    private long parseId(Uri mediaUri) {
+        final List<String> pathSegments;
+        final int size;
+        final String idSegment;
+        final long id;
 
-                return record;
+        try {
+            if ((pathSegments = mediaUri.getPathSegments()) != null &&
+                    (size = pathSegments.size()) >= 2 &&
+                    (idSegment = pathSegments.get(size - 2)) != null) {
+                id = Long.parseLong(idSegment);
+            } else {
+                throw new RuntimeException(mediaUri + " is not valid uri!");
             }
-        });
+        } catch (Exception e) {
+            throw new IllegalArgumentException("There is not media for uri '" + mediaUri + "'!", e);
+        }
+
+        return id;
     }
 
     public static void deleteDatabase(Context context) {
