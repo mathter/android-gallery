@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.TreeSet;
 
-class MediaFileFilter implements java.io.FileFilter {
+public class MediaFileFilter implements java.io.FileFilter {
 
     private static final MimeTypeMap MAP = MimeTypeMap.getSingleton();
 

@@ -27,6 +27,9 @@ public class FlatMediaRecord implements Media {
     @ColumnInfo(name = "uri")
     private Uri uri;
 
+    @ColumnInfo(name = "preview_uri")
+    private Uri previewUri;
+
     @ColumnInfo(name = "last_scanned_time")
     private Date lastScannedTime;
 
@@ -48,6 +51,15 @@ public class FlatMediaRecord implements Media {
 
     public void setUri(Uri uri) {
         this.uri = uri;
+    }
+
+    @Override
+    public Uri getPreviewUri() {
+        return previewUri;
+    }
+
+    public void setPreviewUri(Uri previewUri) {
+        this.previewUri = previewUri;
     }
 
     @Override

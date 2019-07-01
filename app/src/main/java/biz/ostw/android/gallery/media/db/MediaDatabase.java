@@ -74,11 +74,12 @@ public abstract class MediaDatabase extends RoomDatabase {
 
     }
 
-    public Media insert(Uri uri) {
+    public Media insert(Uri uri, Uri previewUri) {
         final long id;
         final FlatMediaRecord r = new FlatMediaRecord();
 
         r.setUri(uri);
+        r.setPreviewUri(previewUri);
         r.setLastScannedTime(new Date());
         r.setWeighting(0L);
 

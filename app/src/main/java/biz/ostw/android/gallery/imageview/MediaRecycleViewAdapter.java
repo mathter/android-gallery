@@ -53,8 +53,10 @@ public class MediaRecycleViewAdapter extends PagedListAdapter<Media, ImageItemVi
     public void onBindViewHolder(@NonNull ImageItemViewHolder holder, int position) {
         Media media = this.getItem(position);
         try {
-            Drawable drawable = new MovieDrawable(this.context.getContentResolver().openInputStream(media.getUri()));
-            holder.imageView.setImageDrawable(drawable);
+            if (media.getPreviewUri() != null) {
+                Drawable drawable = Drawable.createFromStream(this.context.getContentResolver().openInputStream(media.getPreviewUri()), "d");//new MovieDrawable(this.context.getContentResolver().openInputStream(media.getPreviewUri()));
+                holder.imageView.setImageDrawable(drawable);
+            }
             holder.textView.setText(media.getName());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

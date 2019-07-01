@@ -1,11 +1,13 @@
 package biz.ostw.android.gallery;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,7 +26,13 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
 
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 100;
 
-    private ServiceConnection<FileService> fileServiceServiceConnection = new ServiceConnection<>();
+    private ServiceConnection<FileService> fileServiceServiceConnection = new ServiceConnection<FileService>(){
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            super.onServiceConnected(name, service);
+            this.service().update();
+        }
+    };
 
     private MyViewModel model;
 
@@ -33,7 +41,7 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        MediaDatabase.deleteDatabase(this);
+        MediaDatabase.deleteDatabase(this);
     }
 
     private void checkPermissionAndStartScanService() {

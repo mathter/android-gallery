@@ -32,7 +32,7 @@ class MediaDataSource extends PositionalDataSource<Media> {
         if (params.requestedStartPosition < this.size) {
 
             int stop = this.size - (params.requestedStartPosition + params.pageSize);
-            stop = stop > 0 ? stop : this.size - 1;
+            stop = stop > 0 ? params.pageSize : this.size - 1;
 
             result = (List<Media>) this.data.subList(params.requestedStartPosition, stop);
         } else {
@@ -49,7 +49,8 @@ class MediaDataSource extends PositionalDataSource<Media> {
     @Override
     public void loadRange(@NonNull LoadRangeParams params, @NonNull LoadRangeCallback<Media> callback) {
         final List<Media> result;
-        final int stop = this.size - (params.startPosition + params.loadSize);
+        int stop = this.size - (params.startPosition + params.loadSize);
+        stop = stop > 0 ? params.startPosition + params.loadSize : this.size - 1;
 
         if (stop > 0) {
             result = (List<Media>) this.data.subList(params.startPosition, stop);

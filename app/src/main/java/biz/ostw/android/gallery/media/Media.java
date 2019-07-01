@@ -6,6 +6,8 @@ public interface Media {
 
     public Uri getUri();
 
+    public Uri getPreviewUri();
+
     public String getName();
 
     public long getWeighting();

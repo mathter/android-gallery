@@ -27,23 +27,30 @@ public class MovieDrawable extends Drawable {
     private long duration;
 
     public MovieDrawable(InputStream is) {
-        this.movie = Movie.decodeStream(is);
+        try {
+            this.movie = Movie.decodeStream(is);
 
-        this.wigth = this.movie.width();
-        this.height = this.movie.height();
-        this.start = 0;
-        this.duration = this.movie.duration();
+            this.wigth = this.movie.width();
+            this.height = this.movie.height();
+            this.start = 0;
+            this.duration = this.movie.duration();
+        } catch (Exception e) {
+
+        }
     }
 
     public MovieDrawable(Context context, int resId) {
         final InputStream is = context.getResources().openRawResource(resId);
+        try {
+            this.movie = Movie.decodeStream(is);
 
-        this.movie = Movie.decodeStream(is);
+            this.wigth = this.movie.width();
+            this.height = this.movie.height();
+            this.start = 0;
+            this.duration = this.movie.duration();
+        } catch (Exception e) {
 
-        this.wigth = this.movie.width();
-        this.height = this.movie.height();
-        this.start = 0;
-        this.duration = this.movie.duration();
+        }
     }
 
     @Override
