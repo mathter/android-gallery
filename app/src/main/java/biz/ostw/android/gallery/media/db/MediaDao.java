@@ -16,26 +16,29 @@ import java.util.List;
 public interface MediaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long[] insert(Collection<MediaRecord> records);
+    public long[] insert(Collection<FlatMediaRecord> records);
 
-    @Delete
-    public void delete(Collection<MediaRecord> records);
+    @Query("select * from flat_media_record where id = :id")
+    public FlatMediaRecord get(long id);
 
-    @Query("select * from media_record order by weighting")
-    public List<MediaRecord> getChild();
+    @Query("select * from flat_media_record where uri = :uri")
+    public FlatMediaRecord get(Uri uri);
 
-    @Query("select * from media_record where media_root_uri = :mediaRootUri order by weighting")
-    public List<MediaRecord> getChild(Uri mediaRootUri);
-
-    @Query("select * from media_record where id = :id")
-    public MediaRecord get(long id);
+    @Query("select * from flat_media_record order by weighting desc")
+    public List<FlatMediaRecord> get();
 
     @Update(onConflict = OnConflictStrategy.ABORT)
-    public void update(MediaRecord... records);
+    public void update(FlatMediaRecord... records);
 
     @Delete
-    public void delete(MediaRecord record);
+    public void delete(FlatMediaRecord record);
 
-    @Query("delete from media_record where id = :id")
+    @Query("delete from flat_media_record where id = :id")
     public void delete(long id);
+
+    @Query("delete from flat_media_record where uri = :uri")
+    public void delete(Uri uri);
+
+    @Delete
+    public void delete(Collection<FlatMediaRecord> records);
 }

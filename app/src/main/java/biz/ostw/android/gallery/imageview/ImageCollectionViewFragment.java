@@ -4,7 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
+import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +22,7 @@ import android.view.ViewGroup;
 import java.net.URL;
 
 import biz.ostw.android.gallery.R;
+import biz.ostw.android.gallery.media.Media;
 
 
 /**
@@ -28,11 +36,13 @@ import biz.ostw.android.gallery.R;
 public class ImageCollectionViewFragment extends Fragment {
     private static final String ARG_PARAM_URL = "param_url";
 
-    private String urlParam;
+    private Uri urlParam;
 
     private RecyclerView collectionView;
 
     private OnFragmentInteractionListener mListener;
+
+    private PagedListAdapter<Media, ImageItemViewHolder> adapter;
 
     public ImageCollectionViewFragment() {
     }
@@ -56,7 +66,7 @@ public class ImageCollectionViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            urlParam = getArguments().getString(ARG_PARAM_URL);
+            urlParam = getArguments().getParcelable(ARG_PARAM_URL);
         }
     }
 
@@ -69,7 +79,24 @@ public class ImageCollectionViewFragment extends Fragment {
         this.collectionView.setLayoutManager(lLayout);
 
         this.collectionView.setHasFixedSize(true);
-        this.collectionView.setAdapter(new TestRecyclerViewAdapter());
+
+        MediaViewModel model = this.getViewModel();
+
+        model.getData().observe(this, new Observer<PagedList<Media>>() {
+            @Override
+            public void onChanged(PagedList<Media> media) {
+                ImageCollectionViewFragment.this.adapter.submitList(media);
+            }
+        });
+        model.getUriParam().observe(this, new Observer<Uri>() {
+            @Override
+            public void onChanged(Uri uri) {
+                ImageCollectionViewFragment.this.urlParam = uri;
+            }
+        });
+
+        this.adapter = new MediaRecycleViewAdapter(this.getContext());
+        this.collectionView.setAdapter(this.adapter);
 
         return view;
     }
@@ -97,18 +124,18 @@ public class ImageCollectionViewFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private MediaViewModel getViewModel() {
+        return ViewModelProviders.of(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new MediaViewModel(ImageCollectionViewFragment.this.getActivity());
+            }
+        }).get(MediaViewModel.class);
     }
 }

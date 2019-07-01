@@ -26,8 +26,6 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
 
     private ServiceConnection<FileService> fileServiceServiceConnection = new ServiceConnection<>();
 
-    private ImageView imageView;
-
     private MyViewModel model;
 
     @Override
@@ -35,17 +33,7 @@ public class MainActivity extends FragmentActivity implements ImageCollectionVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.imageView = this.findViewById(R.id.imageView);
-        this.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.fileServiceServiceConnection.service().update();
-//                MediaDatabase mdb = MediaDatabase.getInstance(MainActivity.this);
-//                mdb.getChild(Uri.parse("media:/"));
-            }
-        });
-
-        MediaDatabase.deleteDatabase(this);
+//        MediaDatabase.deleteDatabase(this);
     }
 
     private void checkPermissionAndStartScanService() {

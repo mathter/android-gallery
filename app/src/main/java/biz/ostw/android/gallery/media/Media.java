@@ -4,15 +4,9 @@ import android.net.Uri;
 
 public interface Media {
 
-    public Uri getRootUri();
-
-    public void setRootUri(Uri value);
-
-    public Uri getMediaUri();
+    public Uri getUri();
 
     public String getName();
-
-    public void setName(String value);
 
     public long getWeighting();
 

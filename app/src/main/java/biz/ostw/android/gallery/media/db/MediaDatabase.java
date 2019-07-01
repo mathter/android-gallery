@@ -13,14 +13,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import biz.ostw.android.gallery.media.Media;
 import biz.ostw.android.gallery.media.TypeConverter;
 
-@Database(entities = {MediaRecord.class}, version = 1, exportSchema = true)
+@Database(entities = {FlatMediaRecord.class}, version = 1, exportSchema = true)
 @TypeConverters({TypeConverter.class})
 public abstract class MediaDatabase extends RoomDatabase {
 
@@ -75,14 +74,13 @@ public abstract class MediaDatabase extends RoomDatabase {
 
     }
 
-    public Media insert(Uri mediaRootUri, String name, Uri fileUri) {
+    public Media insert(Uri uri) {
         final long id;
-        final MediaRecord r = new MediaRecord();
+        final FlatMediaRecord r = new FlatMediaRecord();
 
-        r.setRootUri(mediaRootUri);
-        r.setName(name);
-        r.setFileUri(fileUri);
+        r.setUri(uri);
         r.setLastScannedTime(new Date());
+        r.setWeighting(0L);
 
         id = this.dao().insert(Collections.singletonList(r))[0];
 
@@ -94,53 +92,32 @@ public abstract class MediaDatabase extends RoomDatabase {
         }
     }
 
+    public Media get(Uri uri) {
+        return this.dao().get(uri);
+    }
+
+    public List<? extends Media> get() {
+        return this.dao().get();
+    }
+
     public void update(Media record) {
-        if (record instanceof MediaRecord) {
-            this.dao().update((MediaRecord) record);
+        if (record instanceof FlatMediaRecord) {
+            this.dao().update((FlatMediaRecord) record);
         } else {
-            throw new IllegalArgumentException(record.getClass() + " is not instance of " + MediaRecord.class);
+            throw new IllegalArgumentException(record.getClass() + " is not instance of " + FlatMediaRecord.class);
         }
-    }
-
-    public List<? extends Media> getChild(Uri mediaRootUri) {
-        return this.dao().getChild(mediaRootUri);
-    }
-
-    public Media get(Uri mediaUri) {
-        return this.dao().get(this.parseId(mediaUri));
     }
 
     public void delete(Media media) {
-        if (media instanceof MediaRecord) {
-            this.dao().delete((MediaRecord) media);
+        if (media instanceof FlatMediaRecord) {
+            this.dao().delete((FlatMediaRecord) media);
         } else {
-            throw new IllegalArgumentException(media.getClass() + " is not instance of " + MediaRecord.class);
+            throw new IllegalArgumentException(media.getClass() + " is not instance of " + FlatMediaRecord.class);
         }
     }
 
-    public void delete(Uri mediaUri) {
-        this.dao().delete(this.parseId(mediaUri));
-    }
-
-    private long parseId(Uri mediaUri) {
-        final List<String> pathSegments;
-        final int size;
-        final String idSegment;
-        final long id;
-
-        try {
-            if ((pathSegments = mediaUri.getPathSegments()) != null &&
-                    (size = pathSegments.size()) >= 2 &&
-                    (idSegment = pathSegments.get(size - 2)) != null) {
-                id = Long.parseLong(idSegment);
-            } else {
-                throw new RuntimeException(mediaUri + " is not valid uri!");
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("There is not media for uri '" + mediaUri + "'!", e);
-        }
-
-        return id;
+    public void delete(Uri uri) {
+        this.dao().delete(uri);
     }
 
     public static void deleteDatabase(Context context) {

@@ -59,21 +59,19 @@ public class FileServiceImpl extends Service implements FileService {
                 final Collection<File> list = scanner.listFolderWithMedia();
                 final MediaDatabase mdb = MediaDatabase.getInstance(FileServiceImpl.this);
 
-                Uri rootMediaUri = Uri.parse("media:/");
-
                 for (File file : list) {
                     Uri fileUri = Uri.parse(file.toURI().toString());
-                    mdb.insert(rootMediaUri, file.getName(), fileUri);
+                    mdb.insert(fileUri);
                 }
             }
         });
     }
 
     @Override
-    public List<Media> list(Uri rootMediaUri, int start, int count) {
+    public List<? extends Media> flat() {
         final MediaDatabase mdb = MediaDatabase.getInstance(this);
-        mdb.getChild(rootMediaUri);
-        return null;
+
+        return mdb.get();
     }
 
     public class LocalBinder extends Binder implements ServiceConnection.Binder<FileService> {

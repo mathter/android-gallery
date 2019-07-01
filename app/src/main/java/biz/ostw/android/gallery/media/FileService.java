@@ -8,5 +8,5 @@ public interface FileService {
 
     public void update();
 
-    public List<Media> list(Uri rootMediaUri, int start, int count);
+    public List<? extends Media> flat();
 }
