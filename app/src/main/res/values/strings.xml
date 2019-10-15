@@ -2,4 +2,8 @@
     <string name="app_name">Gallery</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="permission_required_read_external_storage">It is needed permission for gallery.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

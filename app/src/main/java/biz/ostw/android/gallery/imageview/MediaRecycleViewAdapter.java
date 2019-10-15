@@ -4,6 +4,7 @@ package biz.ostw.android.gallery.imageview;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import biz.ostw.android.gallery.R;
 import biz.ostw.android.gallery.media.Media;
 
 public class MediaRecycleViewAdapter extends PagedListAdapter<Media, ImageItemViewHolder> {
+
+    private SparseBooleanArray selectedItems;
 
     private static final DiffUtil.ItemCallback<Media> DIFFCALLBACK = new DiffUtil.ItemCallback<Media>() {
         @Override

@@ -32,7 +32,7 @@ class MediaDataSource extends PositionalDataSource<Media> {
         if (params.requestedStartPosition < this.size) {
 
             int stop = this.size - (params.requestedStartPosition + params.pageSize);
-            stop = stop > 0 ? params.pageSize : this.size - 1;
+            stop = stop > 0 ? +params.requestedStartPosition + params.pageSize : this.size - 1;
 
             result = (List<Media>) this.data.subList(params.requestedStartPosition, stop);
         } else {
